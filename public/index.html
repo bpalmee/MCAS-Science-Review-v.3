@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCAS Science Squad — Grade 5 STE Review</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font-display: 'Lilita One', cursive;
+      --font-body: 'Nunito', sans-serif;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    body { font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow: hidden; height: 100vh; height: 100dvh; }
+
+    /* ══════ ANIMATIONS ══════ */
+    @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+    @keyframes wiggle { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-5deg) } 75% { transform: rotate(5deg) } }
+    @keyframes popIn { 0% { transform: scale(0.6); opacity: 0 } 60% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+    @keyframes slideUp { 0% { transform: translateY(30px); opacity: 0 } 100% { transform: translateY(0); opacity: 1 } }
+    @keyframes bubbleIn { 0% { transform: scale(0.8) translateY(10px); opacity: 0 } 100% { transform: scale(1) translateY(0); opacity: 1 } }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0) } 30% { transform: translateY(-8px) } }
+    @keyframes gradientMove { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+    @keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.15) } }
+
+    .float { animation: float 3s ease-in-out infinite; }
+    .wiggle:hover { animation: wiggle 0.4s ease-in-out; }
+
+    /* ══════ HOME SCREEN ══════ */
+    .home-screen {
+      height: 100vh; height: 100dvh;
+      background: linear-gradient(145deg, #0B1628 0%, #152238 40%, #1A2D4A 100%);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 24px 16px; overflow-y: auto; position: relative;
+    }
+    .home-screen::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 30% 60%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(2px 2px at 70% 80%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 85% 30%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(1px 1px at 95% 55%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.4), transparent);
+    }
+
+    .home-content { max-width: 560px; width: 100%; position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 30px; padding: 6px 16px; font-size: 12px; font-weight: 700;
+      color: #93C5FD; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px;
+      animation: popIn 0.5s ease-out;
+    }
+    .hero-title {
+      font-family: var(--font-display); font-size: 38px; color: #fff; line-height: 1.1;
+      margin-bottom: 6px; animation: slideUp 0.5s ease-out;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #FBBF24, #F97316, #EF4444, #EC4899, #8B5CF6, #3B82F6, #06B6D4);
+      background-size: 300% 300%; animation: gradientMove 5s ease infinite;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub { font-size: 15px; color: #94A3B8; font-weight: 600; margin-bottom: 8px; animation: slideUp 0.5s ease-out 0.1s both; }
+    .hero-desc { font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 32px; animation: slideUp 0.5s ease-out 0.15s both; }
+    .squad-label { font-family: var(--font-display); font-size: 14px; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; animation: slideUp 0.5s ease-out 0.2s both; }
+
+    .char-grid { display: flex; flex-direction: column; gap: 14px; }
+    .char-card {
+      display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: var(--radius-lg);
+      border: 2px solid transparent; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative; overflow: hidden; font-family: var(--font-body); text-align: left; color: #fff;
+      animation: slideUp 0.5s ease-out both; background: rgba(255,255,255,0.03);
+    }
+    .char-card:nth-child(1) { animation-delay: 0.25s; }
+    .char-card:nth-child(2) { animation-delay: 0.32s; }
+    .char-card:nth-child(3) { animation-delay: 0.39s; }
+    .char-card:nth-child(4) { animation-delay: 0.46s; }
+    .char-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--card-c1), var(--card-c2)); opacity: 0.12; transition: opacity 0.25s; }
+    .char-card:hover::before { opacity: 0.22; }
+    .char-card:hover { border-color: var(--card-c1); transform: translateX(6px); }
+
+    .char-avatar {
+      width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 30px; position: relative; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--card-c1), var(--card-c2));
+      box-shadow: 0 4px 16px var(--card-shadow);
+    }
+    .char-avatar::after { content: ''; position: absolute; inset: -3px; border-radius: 19px; border: 2px dashed var(--card-c1); opacity: 0.3; }
+    .char-name { font-family: var(--font-display); font-size: 20px; margin-bottom: 2px; }
+    .char-role { font-size: 12px; font-weight: 700; color: var(--card-c1); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .char-tagline { font-size: 13px; color: #94A3B8; font-weight: 500; font-style: italic; }
+    .char-go { font-size: 22px; margin-left: auto; opacity: 0.4; transition: all 0.25s; flex-shrink: 0; color: var(--card-c1); }
+    .char-card:hover .char-go { opacity: 1; transform: translateX(4px); }
+
+    .home-footer { text-align: center; font-size: 11px; color: #3B4F6B; margin-top: 28px; line-height: 1.6; animation: slideUp 0.5s ease-out 0.55s both; }
+
+    /* ══════ CHAT SCREEN ══════ */
+    .chat-screen { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+
+    .chat-header { padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative; overflow: hidden; z-index: 2; }
+    .chat-header::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--topic-c1), var(--topic-c2)); }
+    .chat-header > * { position: relative; z-index: 1; }
+
+    .hdr-back {
+      width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); color: #fff;
+      font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s; font-family: var(--font-body);
+    }
+    .hdr-back:hover { background: rgba(255,255,255,0.25); }
+    .hdr-avatar { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid rgba(255,255,255,0.2); }
+    .hdr-info { flex: 1; color: #fff; }
+    .hdr-name { font-family: var(--font-display); font-size: 17px; }
+    .hdr-topic { font-size: 11px; opacity: 0.8; font-weight: 600; }
+    .hdr-badge { background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 800; color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px 14px 8px; background: linear-gradient(180deg, var(--topic-bg) 0%, #FAFBFD 100%); }
+
+    .msg-row { display: flex; margin-bottom: 14px; animation: bubbleIn 0.3s ease-out; }
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.bot { justify-content: flex-start; align-items: flex-end; }
+
+    .msg-avatar {
+      width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-right: 8px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--topic-c1), var(--topic-c2));
+      box-shadow: 0 2px 8px var(--topic-shadow);
+    }
+
+    .msg-content { max-width: 82%; display: flex; flex-direction: column; gap: 4px; }
+
+    .msg-bubble { padding: 11px 15px; font-size: 15px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+    .msg-bubble.bot { background: #fff; color: #1E293B; border-radius: 18px 18px 18px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04); }
+    .msg-bubble.user { background: linear-gradient(135deg, var(--topic-c1), var(--topic-c2)); color: #fff; border-radius: 18px 18px 6px 18px; box-shadow: 0 2px 12px var(--topic-shadow); }
+
+    /* TTS button */
+    .tts-btn {
+      align-self: flex-start; display: flex; align-items: center; gap: 4px;
+      background: none; border: 1px solid #E2E8F0; border-radius: 14px;
+      padding: 3px 10px; font-size: 11px; font-weight: 700; color: #94A3B8;
+      cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
+    }
+    .tts-btn:hover { border-color: var(--topic-c1); color: var(--topic-c1); }
+    .tts-btn.speaking { border-color: var(--topic-c1); color: var(--topic-c1); animation: pulse 1s ease-in-out infinite; }
+
+    /* Typing */
+    .typing-wrap { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 14px; animation: bubbleIn 0.3s ease-out; }
+    .typing-dots { display: flex; gap: 5px; padding: 14px 18px; background: #fff; border-radius: 18px 18px 18px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .typing-dot { width: 8px; height: 8px; border-radius: 50%; animation: bounce 1.2s ease-in-out infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+    /* Quick actions */
+    .quick-bar { padding: 8px 14px; display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; background: #fff; border-top: 1px solid #EEF2F7; }
+    .quick-bar::-webkit-scrollbar { display: none; }
+    .qbtn {
+      padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; transition: all 0.2s;
+      font-family: var(--font-body); border: 2px solid var(--topic-c1);
+      background: transparent; color: var(--topic-c1);
+    }
+    .qbtn:hover { background: var(--topic-c1); color: #fff; transform: translateY(-1px); }
+
+    /* Input */
+    .input-bar { padding: 10px 14px 12px; background: #fff; border-top: 1px solid #EEF2F7; display: flex; gap: 8px; flex-shrink: 0; }
+    .input-bar input {
+      flex: 1; padding: 11px 16px; border-radius: 14px; border: 2px solid #E2E8F0;
+      font-size: 15px; font-weight: 600; outline: none; font-family: var(--font-body);
+      transition: border-color 0.2s; background: #F8FAFC;
+    }
+    .input-bar input:focus { border-color: var(--topic-c1); background: #fff; }
+    .input-bar input::placeholder { color: #A0AEC0; font-weight: 500; }
+
+    .send-btn {
+      width: 46px; height: 46px; border-radius: 14px; border: none;
+      background: linear-gradient(135deg, var(--topic-c1), var(--topic-c2));
+      color: #fff; font-size: 20px; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 12px var(--topic-shadow);
+    }
+    .send-btn:hover { transform: scale(1.05); }
+    .send-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+    .streak-bar {
+      padding: 6px 14px; background: linear-gradient(90deg, var(--topic-bg), #fff);
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+      font-size: 12px; font-weight: 700; color: #64748B; border-bottom: 1px solid #EEF2F7;
+    }
+    .streak-stars { color: #FBBF24; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━
+// CHARACTERS
+// ━━━━━━━━━━━━━━━━━━━━━
+
+const CHARACTERS = [
+  {
+    id: "hydro", name: "Hydro", emoji: "💧",
+    topic: "Earth & Space Science", role: "Water Cycle Explorer",
+    tagline: "\"Let's make a splash in science!\"",
+    c1: "#0EA5E9", c2: "#2563EB", shadow: "rgba(14,165,233,0.25)",
+    bg: "#EFF8FF", dotColor: "#0EA5E9",
+    subtopics: [
+      "Water cycle (evaporation, condensation, precipitation)",
+      "Weathering, erosion, and how plant roots prevent erosion",
+      "Earth's relationship to the Sun and Moon (day/night, shadows, seasons)",
+      "Stars and their apparent positions at different times",
+      "Climate and weather patterns across regions"
+    ],
+    personality: `You are HYDRO, a friendly water droplet who has traveled through the entire water cycle thousands of times. You make water/weather/space puns.
+
+Personality:
+- Adventurous, tells mini stories about your "travels" through evaporation and rain
+- Puns like: "Let's dive in!", "That answer really flows!", "You're making waves!", "Stellar answer!", "Don't let this evaporate from memory!"
+- When wrong: "No worries — even I get stuck in a cloud sometimes!"
+- 1-2 puns per response, keep it natural`
+  },
+  {
+    id: "sprout", name: "Sprout", emoji: "🌱",
+    topic: "Life Science", role: "Ecosystem Guide",
+    tagline: "\"Let's grow our brains together!\"",
+    c1: "#16A34A", c2: "#059669", shadow: "rgba(22,163,74,0.25)",
+    bg: "#ECFDF5", dotColor: "#16A34A",
+    subtopics: [
+      "Plant and animal structures and their functions",
+      "Food webs and energy flow in ecosystems",
+      "Decomposers and how matter cycles in an ecosystem",
+      "Inherited traits vs. learned behaviors",
+      "How organisms respond to their environment"
+    ],
+    personality: `You are SPROUT, a curious seedling fascinated by every living thing. You make plant/nature/biology puns.
+
+Personality:
+- Curious, amazed by how living things work
+- Puns like: "Let's get to the ROOT of this!", "You're really GROWING!", "TREE-mendous!", "Let's BRANCH out!", "Don't LEAF yet!"
+- When wrong: "Oops, let's plant a better seed of understanding!"
+- Talks about "friends" in the ecosystem
+- 1-2 puns per response`
+  },
+  {
+    id: "bolt", name: "Bolt", emoji: "⚡",
+    topic: "Physical Science", role: "Energy & Matter Expert",
+    tagline: "\"I've got the energy for this!\"",
+    c1: "#F59E0B", c2: "#EF4444", shadow: "rgba(245,158,11,0.25)",
+    bg: "#FFFBEB", dotColor: "#F59E0B",
+    subtopics: [
+      "Properties of matter (mass, volume, states of matter)",
+      "Changes in states of matter (melting, freezing, evaporating)",
+      "Conservation of matter (mass stays the same)",
+      "Forces and motion (balanced vs. unbalanced forces)",
+      "Magnets and magnetic forces",
+      "Light, sound, and energy transfer"
+    ],
+    personality: `You are BOLT, a hyperactive spark of energy EXCITED about forces, matter, and energy. You make physics/energy/matter puns.
+
+Personality:
+- Fast, excitable, buzzing with energy
+- Puns like: "ELECTRIFYING answer!", "Let's get this MATTER sorted!", "You're a real FORCE!", "I'm ATTRACTED to that answer — like a magnet!", "That was SOLID!"
+- When wrong: "We hit some friction! Let's try again!"
+- Sometimes can't contain excitement: "OH! This is the cool part!"
+- 1-2 puns per response`
+  },
+  {
+    id: "gizmo", name: "Gizmo", emoji: "🤖",
+    topic: "Technology & Engineering", role: "Design Process Pro",
+    tagline: "\"Let's engineer some answers!\"",
+    c1: "#8B5CF6", c2: "#6D28D9", shadow: "rgba(139,92,246,0.25)",
+    bg: "#F5F3FF", dotColor: "#8B5CF6",
+    subtopics: [
+      "Engineering design process (identify problem, brainstorm, test, improve)",
+      "Fair testing and controlling variables",
+      "Analyzing data from investigations",
+      "Using models to explain scientific ideas",
+      "Identifying criteria and constraints in a design problem"
+    ],
+    personality: `You are GIZMO, a tinkering robot inventor who loves building and solving problems. You make engineering/building/invention puns.
+
+Personality:
+- Methodical but creative, excited about the design process
+- Puns like: "You NAILED that!", "Let's CONSTRUCT an answer!", "That fits like a GEAR!", "Back to the drawing board!", "BEEP BOOP — great answer!"
+- When wrong: "Every great invention takes a few tries!"
+- Frames things as design challenges
+- 1-2 puns per response`
+  }
+];
+
+const BASE_SYSTEM = `You are a fun science tutor helping a 5th grader review for the Massachusetts MCAS STE test.
+
+CHARACTER:
+{PERSONALITY}
+
+CRITICAL RULES — READ CAREFULLY:
+- Be SHORT. Maximum 60 words for question intros. Maximum 80 words for explanations.
+- Use 1-2 SHORT paragraphs per response. Never more than 3.
+- Every sentence should earn its place. Cut filler words. Be punchy.
+- Lead into questions fast — one or two fun sentences, then the question. No long overviews.
+- For multiple choice: question + A/B/C/D choices. That's it. Don't over-explain the setup.
+- When explaining answers: say why the right answer is right in 1-2 sentences, then briefly note why the most tempting wrong answer is wrong. Skip the others unless asked.
+- Include 1-2 puns per response — make them land, don't force them.
+- Stay in character always.
+- Use language a 10-year-old would understand.
+- When a student asks for clarification, give a short real-world example they'd know from everyday life.
+- NEVER write more than 100 words in any single response. This is a hard limit.
+
+Topic: {TOPIC}
+Subtopics: {SUBTOPICS}`;
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// STATE
+// ━━━━━━━━━━━━━━━━━━━━━
+
+let S = { screen: "home", char: null, messages: [], input: "", loading: false, qCount: 0, speakingId: null };
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// TEXT-TO-SPEECH
+// ━━━━━━━━━━━━━━━━━━━━━
+
+let currentUtterance = null;
+
+function speak(text, msgId) {
+  // If already speaking this message, stop
+  if (S.speakingId === msgId) {
+    window.speechSynthesis.cancel();
+    S.speakingId = null;
+    render();
+    return;
+  }
+
+  // Stop any current speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.95;
+  utterance.pitch = 1.05;
+
+  // Try to pick a good voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes("Samantha")) ||
+                    voices.find(v => v.name.includes("Google") && v.lang.startsWith("en")) ||
+                    voices.find(v => v.lang.startsWith("en-US")) ||
+                    voices.find(v => v.lang.startsWith("en"));
+  if (preferred) utterance.voice = preferred;
+
+  utterance.onend = () => { S.speakingId = null; render(); };
+  utterance.onerror = () => { S.speakingId = null; render(); };
+
+  S.speakingId = msgId;
+  render();
+  window.speechSynthesis.speak(utterance);
+}
+
+// Preload voices
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// API
+// ━━━━━━━━━━━━━━━━━━━━━
+
+function buildSystem(char) {
+  return BASE_SYSTEM
+    .replace("{PERSONALITY}", char.personality)
+    .replace("{TOPIC}", char.topic)
+    .replace("{SUBTOPICS}", char.subtopics.join(", "));
+}
+
+async function callAPI(sys, msgs) {
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ system: sys, messages: msgs })
+    });
+    const data = await res.json();
+    if (data.error) return "Oops! Something went wrong. Try again in a moment!";
+    return data.content?.map(c => c.text || "").join("") || "Hmm, let me try that again!";
+  } catch (e) {
+    return "Oops! Something went wrong. Try sending your message again!";
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// ACTIONS
+// ━━━━━━━━━━━━━━━━━━━━━
+
+async function pickCharacter(char) {
+  S.char = char;
+  S.screen = "chat";
+  S.messages = [];
+  S.qCount = 0;
+  S.loading = true;
+  window.speechSynthesis?.cancel();
+  S.speakingId = null;
+  render();
+
+  const opener = [
+    { role: "user", content: `Hi ${char.name}! I'm reviewing ${char.topic} for my MCAS test. Give me a quick 1-sentence greeting in character, then jump straight into a practice question!` }
+  ];
+  const reply = await callAPI(buildSystem(char), opener);
+  S.messages = [{ role: "assistant", content: reply }];
+  S.qCount = 1;
+  S.loading = false;
+  render();
+  scrollBottom();
+}
+
+async function send(text) {
+  if (!text.trim() || S.loading) return;
+  window.speechSynthesis?.cancel();
+  S.speakingId = null;
+  S.messages.push({ role: "user", content: text.trim() });
+  S.input = "";
+  S.loading = true;
+  render();
+  scrollBottom();
+
+  const reply = await callAPI(buildSystem(S.char), S.messages);
+  S.messages.push({ role: "assistant", content: reply });
+  S.loading = false;
+  render();
+  scrollBottom();
+}
+
+async function nextQuestion() {
+  window.speechSynthesis?.cancel();
+  S.speakingId = null;
+  S.messages.push({ role: "user", content: "Next question! Try a different subtopic." });
+  S.loading = true;
+  render();
+  scrollBottom();
+  const reply = await callAPI(buildSystem(S.char), S.messages);
+  S.messages.push({ role: "assistant", content: reply });
+  S.qCount++;
+  S.loading = false;
+  render();
+  scrollBottom();
+}
+
+function goHome() {
+  window.speechSynthesis?.cancel();
+  S.speakingId = null;
+  S.screen = "home";
+  S.messages = [];
+  S.char = null;
+  render();
+}
+
+function scrollBottom() {
+  requestAnimationFrame(() => {
+    const el = document.getElementById("chat-end");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  });
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// RENDER
+// ━━━━━━━━━━━━━━━━━━━━━
+
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = S.screen === "home" ? renderHome() : renderChat();
+  if (S.screen === "home") bindHome(); else bindChat();
+}
+
+function renderHome() {
+  const cards = CHARACTERS.map((c, i) => `
+    <button class="char-card wiggle" data-idx="${i}"
+      style="--card-c1:${c.c1}; --card-c2:${c.c2}; --card-shadow:${c.shadow};">
+      <div class="char-avatar">${c.emoji}</div>
+      <div style="flex:1; min-width:0">
+        <div class="char-name">${c.name}</div>
+        <div class="char-role">${c.role}</div>
+        <div class="char-tagline">${c.tagline}</div>
+      </div>
+      <div class="char-go">›</div>
+    </button>
+  `).join("");
+
+  return `
+    <div class="home-screen">
+      <div class="home-content" style="text-align:center">
+        <div class="hero-badge">Massachusetts · Grade 5</div>
+        <div class="hero-title">Meet the <span>Science Squad</span></div>
+        <div class="hero-sub">Your MCAS STE Review Crew</div>
+        <div class="hero-desc">Pick your study buddy! They'll quiz you, explain tricky concepts, and keep things fun with science puns.</div>
+        <div class="squad-label" style="text-align:left">Choose your guide</div>
+        <div class="char-grid">${cards}</div>
+        <div class="home-footer">Aligned with the 2016 MA STE Curriculum Framework<br>Earth & Space · Life Science · Physical Science · Technology & Engineering</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderChat() {
+  const c = S.char;
+  const cssVars = `--topic-c1:${c.c1}; --topic-c2:${c.c2}; --topic-shadow:${c.shadow}; --topic-bg:${c.bg};`;
+
+  let botMsgIndex = 0;
+  const msgsHTML = S.messages.map((m, i) => {
+    if (m.role === "user") {
+      return `<div class="msg-row user"><div class="msg-bubble user">${esc(m.content)}</div></div>`;
+    }
+    const mid = "bot-" + botMsgIndex;
+    botMsgIndex++;
+    const isSpeaking = S.speakingId === mid;
+    return `
+      <div class="msg-row bot">
+        <div class="msg-avatar">${c.emoji}</div>
+        <div class="msg-content">
+          <div class="msg-bubble bot">${esc(m.content)}</div>
+          <button class="tts-btn ${isSpeaking ? 'speaking' : ''}" data-tts-id="${mid}" data-tts-idx="${i}">
+            ${isSpeaking ? '⏹ Stop' : '🔊 Listen'}
+          </button>
+        </div>
+      </div>`;
+  }).join("");
+
+  const typingHTML = S.loading ? `
+    <div class="typing-wrap">
+      <div class="msg-avatar" style="background:linear-gradient(135deg,${c.c1},${c.c2}); box-shadow:0 2px 8px ${c.shadow}">${c.emoji}</div>
+      <div class="typing-dots">
+        <div class="typing-dot" style="background:${c.dotColor}"></div>
+        <div class="typing-dot" style="background:${c.dotColor}"></div>
+        <div class="typing-dot" style="background:${c.dotColor}"></div>
+      </div>
+    </div>` : "";
+
+  const quickHTML = (!S.loading && S.messages.length > 0) ? `
+    <div class="quick-bar" style="${cssVars}">
+      <button class="qbtn" id="q-next">Next question →</button>
+      <button class="qbtn" id="q-simple">Explain simpler</button>
+      <button class="qbtn" id="q-hint">Give me a hint</button>
+      <button class="qbtn" id="q-wrong">Why is that wrong?</button>
+    </div>` : "";
+
+  const stars = "★".repeat(Math.min(S.qCount, 10));
+
+  return `
+    <div class="chat-screen" style="${cssVars}">
+      <div class="chat-header">
+        <button class="hdr-back" id="btn-back">←</button>
+        <div class="hdr-avatar float">${c.emoji}</div>
+        <div class="hdr-info">
+          <div class="hdr-name">${c.name}</div>
+          <div class="hdr-topic">${c.topic}</div>
+        </div>
+        <div class="hdr-badge">Q${S.qCount}</div>
+      </div>
+
+      ${S.qCount > 0 ? `<div class="streak-bar" style="${cssVars}">Progress: <span class="streak-stars">${stars || '☆'}</span> <span style="margin-left:auto; color:${c.c1}">${S.qCount} question${S.qCount !== 1 ? 's' : ''}</span></div>` : ''}
+
+      <div class="chat-messages" style="${cssVars}" id="msg-area">
+        ${msgsHTML}
+        ${typingHTML}
+        <div id="chat-end"></div>
+      </div>
+
+      ${quickHTML}
+
+      <div class="input-bar" style="${cssVars}">
+        <input id="chat-input" type="text"
+          placeholder="Type your answer or ask ${c.name}..."
+          value="${esc(S.input)}" ${S.loading ? "disabled" : ""}>
+        <button class="send-btn" id="btn-send" ${!S.input.trim() || S.loading ? "disabled" : ""}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// EVENT BINDING
+// ━━━━━━━━━━━━━━━━━━━━━
+
+function bindHome() {
+  document.querySelectorAll(".char-card").forEach(btn => {
+    btn.addEventListener("click", () => pickCharacter(CHARACTERS[parseInt(btn.dataset.idx)]));
+  });
+}
+
+function bindChat() {
+  document.getElementById("btn-back")?.addEventListener("click", goHome);
+
+  const inp = document.getElementById("chat-input");
+  if (inp) {
+    inp.addEventListener("input", e => { S.input = e.target.value; });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") send(S.input); });
+    if (!S.loading) setTimeout(() => inp.focus(), 50);
+  }
+
+  document.getElementById("btn-send")?.addEventListener("click", () => send(S.input));
+  document.getElementById("q-next")?.addEventListener("click", nextQuestion);
+  document.getElementById("q-simple")?.addEventListener("click", () => send("Explain that simpler — give me a quick real-world example!"));
+  document.getElementById("q-hint")?.addEventListener("click", () => send("Give me a short hint! Don't tell me the answer."));
+  document.getElementById("q-wrong")?.addEventListener("click", () => send("Quick — why is that wrong?"));
+
+  // TTS buttons
+  document.querySelectorAll(".tts-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mid = btn.dataset.ttsId;
+      const idx = parseInt(btn.dataset.ttsIdx);
+      const text = S.messages[idx]?.content;
+      if (text) speak(text, mid);
+    });
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━
+// BOOT
+// ━━━━━━━━━━━━━━━━━━━━━
+render();
+</script>
+</body>
+</html>
