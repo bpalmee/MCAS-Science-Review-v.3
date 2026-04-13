@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "No API key found in environment variables" });
+    return res.status(500).json({ error: "API key not configured" });
   }
 
   try {
@@ -29,15 +29,11 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: data.error?.message || "API error",
-        type: data.error?.type || "unknown",
-        status: response.status
-      });
+      return res.status(response.status).json({ error: data.error?.message || "API error" });
     }
 
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: "Failed to reach AI service" });
   }
 }
